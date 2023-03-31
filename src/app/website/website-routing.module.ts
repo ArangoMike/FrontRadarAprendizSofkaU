@@ -53,7 +53,7 @@ const routes: Routes = [
         canActivate: [AdminguardGuard]
       },
       {
-        path: 'league-detail',
+        path: 'league-detail/:name',
         component: LeagueDetailComponent
       },
     ]

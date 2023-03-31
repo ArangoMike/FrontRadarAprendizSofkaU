@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { switchMap } from 'rxjs';
+import { LeagueService } from 'src/app/services/league.service';
+import { RadarService } from 'src/app/services/radar.service';
+import { League } from 'src/shared/models/league';
 
 
 @Component({
@@ -8,6 +14,12 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./league-detail.component.scss']
 })
 export class LeagueDetailComponent {
+
+  leagueName: string | null = null;
+  league: League | null = null;
+  apprentices: string[] | undefined ;
+  radarName: string | undefined;
+
   displayedColumns: string[] = ['knowledgeArea',
   'descriptor',
    'appropiationLevel',
@@ -34,7 +46,7 @@ export class LeagueDetailComponent {
   dataSource1 = new MatTableDataSource<any[]>(this.ELEMENT_DATA1);
 
 
-  view: [number, number] = [1024, 600];
+  view: [number, number] = [1024, 350];
 
   // options
   legend: boolean = true;
@@ -51,7 +63,10 @@ export class LeagueDetailComponent {
     domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
 
-  constructor() {
+  constructor( private toast: ToastrService,
+    private route:ActivatedRoute,
+    private leagueService:LeagueService,
+    private radarService: RadarService) {
     // Object.assign(this, { multi });
   }
 
@@ -59,6 +74,29 @@ export class LeagueDetailComponent {
     console.log(event);
   }
 
+  getRadarAndApprenticesToLeague(){
+
+    this.route.paramMap
+    .pipe(
+      switchMap((params) => {
+        // console.log('params :>> ', params);
+        this.leagueName = params.get('name');
+        if (this.leagueName) {
+          return this.leagueService.getLeague(this.leagueName);
+        }
+        return [null];
+      })
+    )
+    .subscribe((data) => {
+      this.league = data;
+      this.radarName = this.league?.radarName;
+      this.apprentices = this.league?.usersEmails;
+      this.radarService.getRadar(this.radarName!)
+      this.dataSource1 = new MatTableDataSource<any>(this.apprentices);
+
+    });
+
+  }
 
 multi = [
     {

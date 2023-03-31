@@ -27,14 +27,14 @@ export class LeagueDetailComponent {
     { emailApprentice: 'emailada@gam.com', average: 4.2},
     { emailApprentice: 'mi12313@gam.com', average: 4.4},
     { emailApprentice: 'liaiaqweeb@gam.com', average: 3.5},
-   
+
   ];
 
   dataSource = new MatTableDataSource<any[]>(this.ELEMENT_DATA);
   dataSource1 = new MatTableDataSource<any[]>(this.ELEMENT_DATA1);
 
 
-  view: [number, number] = [1400, 600];
+  view: [number, number] = [1024, 600];
 
   // options
   legend: boolean = true;

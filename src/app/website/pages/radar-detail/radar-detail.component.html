@@ -101,31 +101,52 @@
     <!-- factual Column -->
     <ng-container matColumnDef="factual">
       <th mat-header-cell *matHeaderCellDef>factual</th>
-      <td mat-cell *matCellDef="let data">{{ data.factual }}</td>
+      <td mat-cell *matCellDef="let data">
+        <span appSemaforizacion [score]="data.factual">
+          {{ data.factual }}
+        </span>
+      </td>
     </ng-container>
+
 
     <!-- conceptual Column -->
     <ng-container matColumnDef="conceptual">
       <th mat-header-cell *matHeaderCellDef>conceptual</th>
-      <td mat-cell *matCellDef="let data">{{ data.conceptual }}</td>
+      <td mat-cell *matCellDef="let data">
+        <span appSemaforizacion [score]="data.conceptual">
+          {{ data.conceptual }}
+        </span>
+      </td>
     </ng-container>
 
     <!-- procedural Column -->
     <ng-container matColumnDef="procedural">
       <th mat-header-cell *matHeaderCellDef>Porcentual</th>
-      <td mat-cell *matCellDef="let data">{{ data.procedural }}</td>
+      <td mat-cell *matCellDef="let data">
+        <span appSemaforizacion [score]="data.procedural">
+          {{ data.procedural }}
+        </span>
+      </td>
     </ng-container>
 
     <!-- metacognitive Column -->
     <ng-container matColumnDef="metacognitive">
       <th mat-header-cell *matHeaderCellDef>Metacognitivo</th>
-      <td mat-cell *matCellDef="let data">{{ data.metacognitive }}</td>
+      <td mat-cell *matCellDef="let data">
+        <span appSemaforizacion [score]="data.metacognitive">
+          {{ data.metacognitive }}
+        </span>
+      </td>
     </ng-container>
 
     <!-- appropriationLevel Column -->
     <ng-container matColumnDef="appropriationLevel">
       <th mat-header-cell *matHeaderCellDef>Nivel de apropiación</th>
-      <td mat-cell *matCellDef="let data">{{ data.appropriationLevel }}</td>
+      <td mat-cell *matCellDef="let data">
+        <span appSemaforizacion [score]="data.appropriationLevel">
+          {{ data.appropriationLevel }}
+        </span>
+      </td>
     </ng-container>
 
     <!-- Acciones -->

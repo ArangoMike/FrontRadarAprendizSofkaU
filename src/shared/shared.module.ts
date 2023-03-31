@@ -15,7 +15,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {MatTooltipModule} from '@angular/material/tooltip';
 // import { NgxChartsModule } from '@swimlane/ngx-charts';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SemaforizacionDirective } from '../app/shared/directives/semaforizacion.directive';
 @NgModule({
+  declarations: [
+    SemaforizacionDirective
+  ],
   imports: [
     MatButtonModule,
     MatMenuModule,
@@ -48,6 +52,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatSelectModule,
     ReactiveFormsModule,
     MatTooltipModule,
+    SemaforizacionDirective
   ]
 })
 export class SharedModule {}

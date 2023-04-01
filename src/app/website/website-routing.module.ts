@@ -54,7 +54,8 @@ const routes: Routes = [
       },
       {
         path: 'league-detail/:name',
-        component: LeagueDetailComponent
+        component: LeagueDetailComponent,
+        canActivate: [LoginUserGuard]
       },
     ]
   }

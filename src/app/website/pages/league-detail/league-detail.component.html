@@ -57,9 +57,9 @@
       </div>
     </div>
   <div class="d-flex  justify-content-center align-items-center">
-      <ngx-charts-polar-chart
+<ngx-charts-polar-chart
   [view]="view"
-  scheme="solar"
+  scheme="cool"
   [legend]="legend"
   [showXAxisLabel]="showXAxisLabel"
   [showYAxisLabel]="showYAxisLabel"
@@ -67,7 +67,7 @@
   [yAxis]="yAxis"
   [xAxisLabel]="xAxisLabel"
   [yAxisLabel]="yAxisLabel"
-  [results]="multi2"
+  [results]="this.polarDataList"
   (select)="onSelect($event)">
 </ngx-charts-polar-chart>
 </div>
@@ -93,6 +93,7 @@
       <td
         mat-cell
         *matCellDef="let data"
+        (click)="apprenticeAverage(data)"
       >
         <a class="cursor-pointer">
           <i
@@ -125,9 +126,9 @@
             </ng-container>
 
             <!-- descriptor Column -->
-            <ng-container matColumnDef="appropiationLevel">
+            <ng-container matColumnDef="appropiationLevel" >
               <th mat-header-cell *matHeaderCellDef>Nivel de apropiación</th>
-              <td mat-cell *matCellDef="let data">{{ data.appropriationLevel }}</td>
+              <td mat-cell *matCellDef="let data">{{ data.averageApprendite }}</td>
             </ng-container>
 
             <!-- factual Column -->

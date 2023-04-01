@@ -42,7 +42,6 @@ export class RadarService {
     .pipe(
       switchMap((data) => this.getRadar(data.radarName)),
     )
-
   }
 
   addKnowledgeAreaRadar(radarId:string, knowledgeArea:KnowledgeArea):Observable<any>{

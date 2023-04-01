@@ -34,5 +34,10 @@ export class UserService {
     let direction = this.url + 'addaverage/user/' + email;
     return this.http.post<User>(direction, average)
   }
+
+  getUser(email:string):Observable<any>{
+    let direction = this.url + 'user/' + email;
+    return this.http.get<User>(direction)
+  }
  
 }

@@ -10,6 +10,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
 // import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SemaforizacionDirective } from './shared/directives/semaforizacion.directive';
 @NgModule({
   declarations: [
     AppComponent,

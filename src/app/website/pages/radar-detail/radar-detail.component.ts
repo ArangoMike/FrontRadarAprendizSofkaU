@@ -45,7 +45,7 @@ export class RadarDetailComponent {
     )
     .subscribe((data) => {
       this.radar = data;
-      this.radarId = data.radarId;
+      this.radarId = data!.name;
       this.dataSource = new MatTableDataSource<any>(this.radar?.knowledgeAreas);
       console.log(this.radar);
     });

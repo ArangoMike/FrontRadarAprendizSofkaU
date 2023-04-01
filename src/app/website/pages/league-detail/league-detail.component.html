@@ -1,152 +1,138 @@
-
 <body>
-<div class="container-fluid ">
-<div class="row vh-100">
-  <div class="col-md-3 col-lg-2 bg-light vh-100 sidebar">
-    <a href="/" class=" align-items-center mb-2 mb-md-0 me-md-auto link-dark text-decoration-none">
-      <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-      <span class=" fs-4  justify-content-center align-items-center">Menu</span>
-    </a>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
-      <li class="nav-item">
-        <a href="#" class="nav-link active" aria-current="page">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"/></svg>
-          Home
+  <div class="container-fluid ">
+    <div class="row vh-100">
+      <div class="col-md-3 col-lg-2 bg-light vh-100 sidebar">
+        <a href="/" class=" align-items-center mb-2 mb-md-0 me-md-auto link-dark text-decoration-none">
+          <svg class="bi pe-none me-2" width="40" height="32">
+            <use xlink:href="#bootstrap" />
+          </svg>
+          <span class=" fs-4  justify-content-center align-items-center">Menu</span>
         </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-          Dashboard
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-          Orders
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-          Products
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link link-dark">
-          Customers
-        </a>
-      </li>
-    </ul>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="/website" class="nav-link active" aria-current="page">
+              <svg class="bi pe-none me-2" width="16" height="16">
+                <use xlink:href="#home" />
+              </svg>
+              Inicio
+            </a>
+          </li>
+          <li>
+            <a href="https://campus.sofka.com.co/" class="nav-link link-dark">
+              <svg class="bi pe-none me-2" width="16" height="16">
+                <use xlink:href="#speedometer2" />
+              </svg>
+              Campus Sofka
+            </a>
+          </li>
+          <li>
+            <a href="https://sofkau.com/en/about-us/" class="nav-link link-dark">
+              <svg class="bi pe-none me-2" width="16" height="16">
+                <use xlink:href="#table" />
+              </svg>
+              SofkaU
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link link-dark">
+              Customers
+            </a>
+          </li>
+        </ul>
 
+      </div>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 vh-100">
+        <div
+          class="d-flex justify-content-between  flex-wrap flex-md-nowrap align-items-center pt-4 pb-2 mb-3 border-bottom">
+          <h1 class="h2">Dashboard</h1>
+
+
+        </div>
+        <div class="d-flex  justify-content-center align-items-center">
+          <ngx-charts-polar-chart [view]="view" scheme="cool" [legend]="legend" [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel" [xAxis]="xAxis" [yAxis]="yAxis" [xAxisLabel]="xAxisLabel"
+            [yAxisLabel]="yAxisLabel" [results]="this.polarDataList" (select)="onSelect($event)">
+          </ngx-charts-polar-chart>
+        </div>
+
+
+        <hr>
+        <br>
+        
+        <div class="table-responsive">
+          <div class="grid grid-cols-2 gap-4">
+            <!-- ... -->
+            <div>
+              <h2>Aprendices</h2>
+              <table mat-table [dataSource]="dataApprendices" class="mat-elevation-z8">
+                <!-- knowledgeArea Column -->
+                <ng-container matColumnDef="emailApprentice">
+                  <th mat-header-cell *matHeaderCellDef>Aprendiz</th>
+                  <td mat-cell *matCellDef="let data">{{ data }}</td>
+                </ng-container>
+
+                <!-- Acciones -->
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                  <td mat-cell *matCellDef="let data" (click)="apprenticeAverage(data)">
+                    <a class="cursor-pointer">
+                      <i class="fa fa-eye fa-md action-table text-[#009CD7]" matTooltip="Detalle">
+                      </i>
+                    </a>
+                  </td>
+                </ng-container>
+
+
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns1"></tr>
+                
+              </table>
+              <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+                  aria-label="Select page of periodic elements">
+                </mat-paginator>
+            </div>
+            <!-- TABLA 2 -->
+            <div>
+              <h2>Comparación promedios</h2>
+              <table mat-table [dataSource]="dataKnowledgeAreas" class="mat-elevation-z8">
+                <!-- knowledgeArea Column -->
+                <ng-container matColumnDef="knowledgeArea">
+                  <th mat-header-cell *matHeaderCellDef>Area de conocimiento</th>
+                  <td mat-cell *matCellDef="let data">{{ data.name }}</td>
+                </ng-container>
+
+                <!-- knowledgeArea Column -->
+                <ng-container matColumnDef="descriptor">
+                  <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                  <td mat-cell *matCellDef="let data">{{ data.descriptor }}</td>
+                </ng-container>
+
+                <!-- descriptor Column -->
+                <ng-container matColumnDef="appropiationLevel">
+                  <th mat-header-cell *matHeaderCellDef>Nivel de apropiación</th>
+                  <td mat-cell *matCellDef="let data">{{ data.averageApprendite }}</td>
+                </ng-container>
+
+                <!-- factual Column -->
+                <ng-container matColumnDef="appropiationLevelExpected">
+                  <th mat-header-cell *matHeaderCellDef>Nivel de apropiación esperado</th>
+                  <td mat-cell *matCellDef="let data">{{ data.appropriationLevel }}</td>
+                </ng-container>
+
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              </table>
+              <mat-paginator #paginator1 [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+                  aria-label="Select page of periodic elements">
+                </mat-paginator>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
   </div>
-
-  <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 vh-100">
-    <div class="d-flex justify-content-between  flex-wrap flex-md-nowrap align-items-center pt-4 pb-2 mb-3 border-bottom">
-      <h1 class="h2">Dashboard</h1>
-      <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2">
-          <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-          <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-        </div>
-        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-          <span data-feather="calendar" class="align-text-bottom"></span>
-          This week
-        </button>
-      </div>
-    </div>
-  <div class="d-flex  justify-content-center align-items-center">
-<ngx-charts-polar-chart
-  [view]="view"
-  scheme="cool"
-  [legend]="legend"
-  [showXAxisLabel]="showXAxisLabel"
-  [showYAxisLabel]="showYAxisLabel"
-  [xAxis]="xAxis"
-  [yAxis]="yAxis"
-  [xAxisLabel]="xAxisLabel"
-  [yAxisLabel]="yAxisLabel"
-  [results]="this.polarDataList"
-  (select)="onSelect($event)">
-</ngx-charts-polar-chart>
-</div>
-
-
-<hr>
-<br>
-    <h2>Section title</h2>
-    <div class="table-responsive">
-      <div class="grid grid-cols-2 gap-4">
-         <!-- ... -->
-         <div>
-          <table mat-table [dataSource]="dataApprendices" class="mat-elevation-z8">
-            <!-- knowledgeArea Column -->
-            <ng-container matColumnDef="emailApprentice">
-              <th mat-header-cell *matHeaderCellDef>Aprendiz</th>
-              <td mat-cell *matCellDef="let data">{{ data }}</td>
-            </ng-container>
-
-<!-- Acciones -->
-    <ng-container matColumnDef="action">
-      <th mat-header-cell *matHeaderCellDef>Acciones</th>
-      <td
-        mat-cell
-        *matCellDef="let data"
-        (click)="apprenticeAverage(data)"
-      >
-        <a class="cursor-pointer">
-          <i
-          class="fa fa-eye fa-md action-table text-[#009CD7]"
-          matTooltip="Detalle">
-        </i>
-        </a>
-      </td>
-    </ng-container>
-
-
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns1"></tr>
-          </table>
-        </div>
-        <!-- TABLA 2 -->
-        <div>
-          <table mat-table [dataSource]="dataKnowledgeAreas" class="mat-elevation-z8">
-            <!-- knowledgeArea Column -->
-            <ng-container matColumnDef="knowledgeArea">
-              <th mat-header-cell *matHeaderCellDef>Area de conocimiento</th>
-              <td mat-cell *matCellDef="let data">{{ data.name }}</td>
-            </ng-container>
-
-            <!-- knowledgeArea Column -->
-            <ng-container matColumnDef="descriptor">
-              <th mat-header-cell *matHeaderCellDef>Descripción</th>
-              <td mat-cell *matCellDef="let data">{{ data.descriptor }}</td>
-            </ng-container>
-
-            <!-- descriptor Column -->
-            <ng-container matColumnDef="appropiationLevel" >
-              <th mat-header-cell *matHeaderCellDef>Nivel de apropiación</th>
-              <td mat-cell *matCellDef="let data">{{ data.averageApprendite }}</td>
-            </ng-container>
-
-            <!-- factual Column -->
-            <ng-container matColumnDef="appropiationLevelExpected">
-              <th mat-header-cell *matHeaderCellDef>Nivel de apropiación esperado</th>
-              <td mat-cell *matCellDef="let data">{{ data.appropriationLevel }}</td>
-            </ng-container>
-
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-          </table>
-        </div>
-
-      </div>
-    </div>
-  </main>
-</div>
-</div>
-
-

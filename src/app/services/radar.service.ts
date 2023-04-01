@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { async } from '@angular/core/testing';
 import { Observable } from 'rxjs';
 import {  switchMap } from 'rxjs/operators';
 import { KnowledgeArea } from 'src/shared/models/knowledgeArea';
@@ -27,7 +28,7 @@ export class RadarService {
     return this.http.get<Radar[]>(direction);
   }
 
-  getRadar(name: string): Observable<any>{
+  getRadar(name: string): Observable<Radar>{
     let direction =  this.url +`/radar/${name}`;
     return this.http.get<Radar>(direction);
   }
@@ -39,9 +40,9 @@ export class RadarService {
 
   getRadarByLeague(leagueName: string){
     return this.getLeague(leagueName)
-    .pipe(
-      switchMap((data) => this.getRadar(data.radarName)),
-    )
+      .pipe(
+        switchMap( (data) => this.getRadar(data.radarName))
+      )
   }
 
   addKnowledgeAreaRadar(radarId:string, knowledgeArea:KnowledgeArea):Observable<any>{

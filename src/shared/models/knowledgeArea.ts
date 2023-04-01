@@ -7,3 +7,4 @@ export interface KnowledgeArea{
       metacognitive:number;
       appropriationLevel:number;
 }
+

@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import {  MatTableDataSource } from '@angular/material/table';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, switchMap } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, switchMap } from 'rxjs';
 import { LeagueService } from 'src/app/services/league.service';
 import { RadarService } from 'src/app/services/radar.service';
 import { League } from 'src/shared/models/league';
@@ -18,18 +18,19 @@ import { dataTableLeague } from 'src/shared/models/dataTableLeague';
   selector: 'app-league-detail',
   templateUrl: './league-detail.component.html',
   styleUrls: ['./league-detail.component.scss']
+ 
 })
 export class LeagueDetailComponent implements OnInit {
 
-  leagueName: string | null = null;
+  leagueName: any | null = null;
   league: League | null = null;
 
- 
 
   dataTable: dataTableLeague[] = [];
   averagesFinal: any[] = [];
   apprentices = [];
-  knowledgeAreasList = [];
+
+  knowledgeAreasList!:KnowledgeArea[] | undefined;
   radarName: string | undefined;
   radar !: Radar;
   polarDataList: PolarData[] = [];
@@ -55,7 +56,7 @@ export class LeagueDetailComponent implements OnInit {
   ];
 
 
-  dataKnowledgeAreas = new MatTableDataSource<dataTableLeague>();
+  dataKnowledgeAreas = new MatTableDataSource<dataTableLeague>(this.dataTable);
   dataApprendices = new MatTableDataSource<string[]>(this.apprentices);
 
 
@@ -73,70 +74,66 @@ export class LeagueDetailComponent implements OnInit {
   yAxisLabel: string = 'Population';
 
 
-  
 
   constructor(private toast: ToastrService,
     private route: ActivatedRoute,
     private leagueService: LeagueService,
     private radarService: RadarService,
-    private userService: UserService) {
-    // Object.assign(this, { multi2 });
+    private userService: UserService) {  }
 
-    
-  }
   ngOnInit(): void {
-    this.getRadarAndApprenticesToLeague();
     this.getLeague();
-    
   }
 
   onSelect(event: any) {
     console.log(event);
   }
 
-  getRadarAndApprenticesToLeague() {
 
+ 
+  async getRadarAndApprenticesToLeague() {
     this.route.paramMap
       .pipe(
         switchMap((params) => {
           // console.log('params :>> ', params);
-          this.leagueName = params.get('name');
+          const leagueName = params.get('name');
+          this.leagueName = leagueName;
           if (this.leagueName) {
             return this.radarService.getRadarByLeague(this.leagueName);
           }
           return [null];
         })
       )
-      .subscribe((data) => {
+      .subscribe(async (data) => {
         console.log('entre');
-        
-        this.knowledgeAreasList = data.knowledgeAreas;
-        this.dataKnowledgeAreas.data = this.knowledgeAreasList;
-        this.initPolarData(this.knowledgeAreasList, this.polarData);
+        this.knowledgeAreasList = data!.knowledgeAreas;
+        this.initPolarData(this.knowledgeAreasList!)
 
       });
 
   }
 
-  initPolarData(knowledgeAreaList: KnowledgeArea[], polarData: PolarData) {
-    polarData.name = "Radar";
+  initPolarData(knowledgeAreaList: KnowledgeArea[]) {
+    this.polarData.name = "Radar";
     knowledgeAreaList.forEach(area => {
       const newSerieData = { name: area.descriptor, value: area.appropriationLevel };
       this.serieList.push(newSerieData);
-      polarData.series = this.serieList;
+     
+      this.polarData.series = this.serieList;
 
     })
-
+    
     this.polarDataList = [...this.polarDataList, this.polarData]
   }
 
   getLeague() {
-    this.leagueService.getLeague(this.leagueName).subscribe((data) => {
-      this.league = data;
+    this.leagueService.getLeague(this.route.snapshot.params['name']).subscribe((data) => {
+      const res = data;
+      this.league = res;
       this.dataApprendices.data = data.usersEmails;
-      this.averageAll(data.usersEmails, data.radarName)
-      this.apprenticeAverages(data.usersEmails)
-
+      this.averageAll(res.usersEmails,res.radarName)
+      this.apprenticeAverages(this.league!.usersEmails!)
+      
     })
   }
 
@@ -147,6 +144,7 @@ export class LeagueDetailComponent implements OnInit {
     })
 
   }
+  //pinto en grafica datos todos los aprendices
   apprenticeAverage1(email: string) {
     let userAverages: Serie[] = [];
     let userData: PolarData = {
@@ -172,19 +170,21 @@ export class LeagueDetailComponent implements OnInit {
     };
     this.getRadarAndApprenticesToLeague();
     this.userService.getUser(email).subscribe(user => {
+     
+
       user.averages.forEach((average: { description: any; appropriationLevel: any; }) => {
         const newSerieData = { name: average.description, value: average.appropriationLevel }
         userAverages.push(newSerieData)
         userData.series = userAverages
       })
     })
+
     this.polarDataList = [userData]
   }
 
 
   averageAll(emails: string[], radarName: string) {
     let apprentices: User[] = [];
-    const sumByKnowledgeArea = {};
     let appropiationLevelApprentices: any[] = [];
 
     const observables = emails.map(email => this.userService.getUser(email));
@@ -197,6 +197,7 @@ export class LeagueDetailComponent implements OnInit {
     });
 
     this.radarService.getRadar(radarName).subscribe(res => {
+      let data1: dataTableLeague[] = [];
 
       for (let index = 0; index < res.knowledgeAreas!.length; index++) {
 
@@ -211,22 +212,61 @@ export class LeagueDetailComponent implements OnInit {
 
         this.averagesFinal.push(apropiation);
       }
-     let i = -1;
-     const newData = this.dataKnowledgeAreas.data.map(item => {
-      return {
-        ...item,
-        averageApprendite: this.averagesFinal.at(0)
-      };
-    });
-    console.log(newData);
-    
-    this.dataKnowledgeAreas.data =newData;
-    console.log(this.dataKnowledgeAreas);
-    })
+      console.log(this.averagesFinal);
 
+      this.functionTable(res.knowledgeAreas!,this.averagesFinal)
+/*
+      const nuevoObjeto = [];
+    for (let i = 0; i < res.knowledgeAreas!.length; i++) {
+     
+      // Creamos una nueva tupla que contiene la tupla de x y el número aleatorio
+      const nuevaTupla:dataTableLeague = {
+        name: res.knowledgeAreas!.at(i)!.name,
+        descriptor: res.knowledgeAreas!.at(i)!.descriptor,
+        appropriationLevel: res.knowledgeAreas!.at(i)!.appropriationLevel,
+        averageApprendite: this.averagesFinal.at(1),
+      };
+      // Agregamos la nueva tupla al nuevo objeto
+      nuevoObjeto.push(nuevaTupla);
+  */
+   
+    })
+    
   }
 
+  functionTable(knowledgeAreasList: KnowledgeArea[],average:any[]){
+    const nuevoObjeto = [];
+    for (let i = 0; i < knowledgeAreasList.length; i++) {
+     
+      // Creamos una nueva tupla que contiene la tupla de x y el número aleatorio
+      const nuevaTupla:dataTableLeague = {
+        name: knowledgeAreasList.at(i)!.name,
+        descriptor: knowledgeAreasList.at(i)!.descriptor,
+        appropriationLevel: knowledgeAreasList.at(i)!.appropriationLevel,
+        averageApprendite: average.at(i),
+      };
+      // Agregamos la nueva tupla al nuevo objeto
+      nuevoObjeto.push(nuevaTupla);
+    }
+    
+    this.dataKnowledgeAreas.data = nuevoObjeto;
+  }
 
+  llenarTabla(knowledgeAreaList: KnowledgeArea[]) {
+    let data1: dataTableLeague[] = [];
+
+    knowledgeAreaList.forEach(area => {
+      const tupla: dataTableLeague = {
+        name: area.name,
+        descriptor: area.descriptor,
+        appropriationLevel: area.appropriationLevel,
+    
+      }
+      data1.push(tupla);
+    })
+    this.dataTable = data1;
+    this.dataKnowledgeAreas.data = this.dataTable;
+  }
 
 }
 

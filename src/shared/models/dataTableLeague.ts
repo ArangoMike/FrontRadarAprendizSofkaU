@@ -1,6 +1,6 @@
-export interface dataTableLeague{
-    name:string;
-    descriptor:string,
-    averageApprendite?:number,
-    appropriationLevel?:number
+export interface dataTableLeague {
+    name: string | undefined;
+    descriptor: string | undefined;
+    appropriationLevel: number | undefined;
+    averageApprendite?: number | undefined;
 }

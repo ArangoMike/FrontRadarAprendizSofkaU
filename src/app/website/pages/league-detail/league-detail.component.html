@@ -67,7 +67,7 @@
   [yAxis]="yAxis"
   [xAxisLabel]="xAxisLabel"
   [yAxisLabel]="yAxisLabel"
-  [results]="multi"
+  [results]="multi2"
   (select)="onSelect($event)">
 </ngx-charts-polar-chart>
 </div>
@@ -80,18 +80,28 @@
       <div class="grid grid-cols-2 gap-4">
          <!-- ... -->
          <div>
-          <table mat-table [dataSource]="dataSource1" class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataApprendices" class="mat-elevation-z8">
             <!-- knowledgeArea Column -->
             <ng-container matColumnDef="emailApprentice">
               <th mat-header-cell *matHeaderCellDef>Aprendiz</th>
-              <td mat-cell *matCellDef="let data">{{ data.emailApprentice }}</td>
+              <td mat-cell *matCellDef="let data">{{ data }}</td>
             </ng-container>
 
-            <!-- knowledgeArea Column -->
-            <ng-container matColumnDef="average">
-              <th mat-header-cell *matHeaderCellDef>Visualizar promedio</th>
-              <td mat-cell *matCellDef="let data">{{ data.average }}</td>
-            </ng-container>
+<!-- Acciones -->
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td
+        mat-cell
+        *matCellDef="let data"
+      >
+        <a class="cursor-pointer">
+          <i
+          class="fa fa-eye fa-md action-table text-[#009CD7]"
+          matTooltip="Detalle">
+        </i>
+        </a>
+      </td>
+    </ng-container>
 
 
 
@@ -99,12 +109,13 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns1"></tr>
           </table>
         </div>
+        <!-- TABLA 2 -->
         <div>
-          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataKnowledgeAreas" class="mat-elevation-z8">
             <!-- knowledgeArea Column -->
             <ng-container matColumnDef="knowledgeArea">
               <th mat-header-cell *matHeaderCellDef>Area de conocimiento</th>
-              <td mat-cell *matCellDef="let data">{{ data.knowledgeArea }}</td>
+              <td mat-cell *matCellDef="let data">{{ data.name }}</td>
             </ng-container>
 
             <!-- knowledgeArea Column -->
@@ -116,13 +127,13 @@
             <!-- descriptor Column -->
             <ng-container matColumnDef="appropiationLevel">
               <th mat-header-cell *matHeaderCellDef>Nivel de apropiación</th>
-              <td mat-cell *matCellDef="let data">{{ data.appropiationLevel }}</td>
+              <td mat-cell *matCellDef="let data">{{ data.appropriationLevel }}</td>
             </ng-container>
 
             <!-- factual Column -->
             <ng-container matColumnDef="appropiationLevelExpected">
               <th mat-header-cell *matHeaderCellDef>Nivel de apropiación esperado</th>
-              <td mat-cell *matCellDef="let data">{{ data.appropiationLevelExpected }}</td>
+              <td mat-cell *matCellDef="let data">{{ data.appropriationLevel }}</td>
             </ng-container>
 
 

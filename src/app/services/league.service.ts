@@ -10,19 +10,19 @@ export class LeagueService {
 
   constructor(private http:HttpClient) { }
 
-  private url: string = 'http://localhost:8080/';
+  private url: string = 'http://localhost:8080';
 
   saveLeagues(league:League):Observable<any>{
-    let direction = this.url + 'create/league';
+    let direction = this.url + '/create/league';
     return this.http.post<League>(direction,league);
   }
 
   listLeagues():Observable<any>{
-    let direction = this.url +'listall/leagues';
+    let direction = this.url +'/listall/leagues';
     return this.http.get<League[]>(direction);
   }
 
-  getLeague(leagueName: string):Observable<any>{
+  getLeague(leagueName: string | null):Observable<any>{
     let direction = this.url + '/league/'+ leagueName;
     return this.http.get<League>(direction);
   }

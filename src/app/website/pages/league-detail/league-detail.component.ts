@@ -6,6 +6,8 @@ import { switchMap } from 'rxjs';
 import { LeagueService } from 'src/app/services/league.service';
 import { RadarService } from 'src/app/services/radar.service';
 import { League } from 'src/shared/models/league';
+import { Radar } from '../../../../shared/models/radar';
+import { KnowledgeArea } from '../../../../shared/models/knowledgeArea';
 
 
 @Component({
@@ -15,10 +17,25 @@ import { League } from 'src/shared/models/league';
 })
 export class LeagueDetailComponent {
 
-  leagueName: string | null = null;
+  leagueName: string |null = null;
   league: League | null = null;
-  apprentices: string[] | undefined ;
+  apprentices  = [] ;
+  knowledgeAreasList = [];
   radarName: string | undefined;
+  radar !: Radar;
+  polarDataList : PolarData[] = [];
+  polarData : PolarData = {
+    name: "",
+    series: []
+  };
+
+  multi2 !: any[];
+
+  serieList : Serie[] = [];
+  serieData : Serie = {
+    name: "",
+    value: 0
+  }
 
   displayedColumns: string[] = ['knowledgeArea',
   'descriptor',
@@ -26,7 +43,7 @@ export class LeagueDetailComponent {
    'appropiationLevelExpected'];
 
    displayedColumns1: string[] = ['emailApprentice',
-  'average',
+  'action',
   ];
 
 
@@ -42,8 +59,8 @@ export class LeagueDetailComponent {
 
   ];
 
-  dataSource = new MatTableDataSource<any[]>(this.ELEMENT_DATA);
-  dataSource1 = new MatTableDataSource<any[]>(this.ELEMENT_DATA1);
+  dataKnowledgeAreas = new MatTableDataSource<any[]>();
+  dataApprendices = new MatTableDataSource<string[]>(this.apprentices);
 
 
   view: [number, number] = [1024, 350];
@@ -67,7 +84,29 @@ export class LeagueDetailComponent {
     private route:ActivatedRoute,
     private leagueService:LeagueService,
     private radarService: RadarService) {
-    // Object.assign(this, { multi });
+    // Object.assign(this, { multi2 });
+    this.getRadarAndApprenticesToLeague();
+    this.getLeague();
+
+    this.multi2 = [
+      {
+        "name": "Germany",
+        "series": [
+          {
+            "name": "1990",
+            "value": 62000000
+          },
+          {
+            "name": "2010",
+            "value": 73000000
+          },
+          {
+            "name": "2011",
+            "value": 89400000
+          }
+        ]
+      }
+    ];
   }
 
   onSelect(event: any) {
@@ -81,94 +120,61 @@ export class LeagueDetailComponent {
       switchMap((params) => {
         // console.log('params :>> ', params);
         this.leagueName = params.get('name');
+        console.log('this.leagueName :>> ', this.leagueName);
         if (this.leagueName) {
-          return this.leagueService.getLeague(this.leagueName);
+          return this.radarService.getRadarByLeague(this.leagueName);
         }
         return [null];
       })
     )
     .subscribe((data) => {
-      this.league = data;
-      this.radarName = this.league?.radarName;
-      this.apprentices = this.league?.usersEmails;
-      this.radarService.getRadar(this.radarName!)
-      this.dataSource1 = new MatTableDataSource<any>(this.apprentices);
+
+      console.log('this.radar :>> ', data);
+      this.knowledgeAreasList = data.knowledgeAreas;
+      this.dataKnowledgeAreas.data = this.knowledgeAreasList;
+
+      this.initPolarData(this.knowledgeAreasList, this.polarData);
+
 
     });
 
   }
 
-multi = [
-    {
-      "name": "Germany",
-      "series": [
-        {
-          "name": "1990",
-          "value": 62000000
-        },
-        {
-          "name": "2010",
-          "value": 73000000
-        },
-        {
-          "name": "2011",
-          "value": 89400000
-        }
-      ]
-    },
+  initPolarData(knowledgeAreaList: KnowledgeArea[], polarData: PolarData){
+    console.log("ENTRAMOS");
+    polarData.name = "Radar example";
+    knowledgeAreaList.forEach(area => {
+      const newSerieData = { name: area.descriptor, value: area.appropriationLevel };
+      this.serieList.push(newSerieData);
+      polarData.series = this.serieList;
 
-    {
-      "name": "USA",
-      "series": [
-        {
-          "name": "1990",
-          "value": 250000000
-        },
-        {
-          "name": "2010",
-          "value": 309000000
-        },
-        {
-          "name": "2011",
-          "value": 311000000
-        }
-      ]
-    },
+    })
 
-    {
-      "name": "France",
-      "series": [
-        {
-          "name": "1990",
-          "value": 58000000
-        },
-        {
-          "name": "2010",
-          "value": 50000020
-        },
-        {
-          "name": "2011",
-          "value": 58000000
-        }
-      ]
-    },
-    {
-      "name": "UK",
-      "series": [
-        {
-          "name": "1990",
-          "value": 57000000
-        },
-        {
-          "name": "2010",
-          "value": 62000000
-        },
-        {
-          "name": "2011",
-          "value": 72000000
-        }
-      ]
-    }
-  ];
+    this.polarDataList.push(polarData);
+    console.log('this.polarDataList :>> ', this.polarDataList);
 
+  }
+
+  getLeague(){
+    this.leagueService.getLeague(this.leagueName).subscribe((data) => {
+      this.league = data;
+      this.dataApprendices.data = data.usersEmails;
+      console.log('this.league :>> ', this.league);
+    })
+  }
+
+
+
+
+
+}
+
+export interface PolarData  {
+  name: string,
+  series: Serie[]
+}
+
+export interface Serie {
+  name: string,
+  value: number
 }

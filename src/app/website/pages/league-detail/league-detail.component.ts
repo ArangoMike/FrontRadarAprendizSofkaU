@@ -19,7 +19,7 @@ import { MatPaginator } from '@angular/material/paginator';
   selector: 'app-league-detail',
   templateUrl: './league-detail.component.html',
   styleUrls: ['./league-detail.component.scss']
- 
+
 })
 export class LeagueDetailComponent implements AfterViewInit, OnInit {
 
@@ -87,7 +87,7 @@ export class LeagueDetailComponent implements AfterViewInit, OnInit {
       setTimeout(()=>{
         this.averageAll(this.league!.usersEmails!, this.league!.radarName!)
       },500)
-     
+
       }
 
   ngOnInit(): void {
@@ -177,7 +177,7 @@ export class LeagueDetailComponent implements AfterViewInit, OnInit {
       series: []
     };
     let avgs: any[] =[]
-    
+
     this.getRadarAndApprenticesToLeague();
     this.userService.getUser(email).subscribe(user => {
 
@@ -222,7 +222,7 @@ export class LeagueDetailComponent implements AfterViewInit, OnInit {
         this.averagesFinal.push(apropiation);
       }
       this.functionTable(res.knowledgeAreas!,this.averagesFinal)
-    }) 
+    })
   }
 
   functionTable(knowledgeAreasList: KnowledgeArea[],average:any[]){

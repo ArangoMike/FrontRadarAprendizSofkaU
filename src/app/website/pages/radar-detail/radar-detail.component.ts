@@ -6,6 +6,7 @@ import { Radar } from '../../../../shared/models/radar';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { KnowledgeArea } from '../../../../shared/models/knowledgeArea';
 
 @Component({
   selector: 'app-radar-detail',
@@ -23,9 +24,10 @@ export class RadarDetailComponent {
   radarId !: string;
 
   formAddknowledgeArea !: FormGroup;
+  flagEdit: boolean = false;
 
   constructor(
-    private toast: ToastrService,
+    public toast: ToastrService,
     private _formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private radarService: RadarService
@@ -55,9 +57,10 @@ export class RadarDetailComponent {
    }
 
    initForm(): void {
+    this.flagEdit = false;
     this.formAddknowledgeArea = this._formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(4)]],
-      descriptor: ['', [Validators.required, Validators.minLength(4)]],
+      descriptor: ['', [Validators.required, Validators.minLength(3)]],
       factual: ['', [Validators.required, Validators.min(0), Validators.max(5)]],
       conceptual: ['', [Validators.required, Validators.min(0), Validators.max(5)]],
       procedural: ['', [Validators.required, Validators.min(0), Validators.max(5)]],
@@ -98,7 +101,7 @@ export class RadarDetailComponent {
 
 
   onSubmitformAddknowledgeArea(){
-    console.log("Entramos");
+
 
     if (this.formAddknowledgeArea.invalid) {
 
@@ -107,6 +110,7 @@ export class RadarDetailComponent {
         control.markAllAsTouched();
       })
     }
+
 
     const knowledgeAreaDTO: any = {
       name: this.formAddknowledgeArea.value.name,
@@ -118,9 +122,79 @@ export class RadarDetailComponent {
       appropriationLevel: this.formAddknowledgeArea.value.appropriationLevel,
     }
 
-    console.log('CREATE ', knowledgeAreaDTO);
 
-    this.radarService.addKnowledgeAreaRadar(this.radarId, knowledgeAreaDTO).subscribe({
+    if (!this.flagEdit) {
+      console.log("EVENTO -> GUARDAR FORMULARIO");
+      console.log('knowledgeAreaDTO :>> ', knowledgeAreaDTO);
+      this.radarService.addKnowledgeAreaRadar(this.radarId, knowledgeAreaDTO).subscribe({
+        next: (response) => {
+          console.log('response :>> ', response);
+        },
+        error: (error) => {
+          console.log('error :>> ', error);
+
+          return this.toast.error('Error inesperado', 'Vuelve a intentarlo, por favor.');
+
+        },
+        complete: () => {
+          this.toast.success('Guardando...', 'Registro exitoso!');
+          setTimeout(() => {
+            window.location.reload();
+           }, 1500);
+
+        }
+      });
+    }
+
+    if (this.flagEdit) {
+      console.log("EVENTO -> EDITAR FORMULARIO");
+      console.log('knowledgeAreaDTO :>> ', knowledgeAreaDTO);
+      let radarName = this.radar?.name;
+      console.log(radarName);
+      this.radarService.updateKnowledgeArea(radarName, knowledgeAreaDTO.descriptor, knowledgeAreaDTO).subscribe({
+        next: (response) => {
+          console.log('response :>> ', response);
+        },
+        error: (error) => {
+          console.log('error :>> ', error);
+          return this.toast.error('Error inesperado', 'Vuelve a intentarlo, por favor.');
+
+        },
+        complete: () => {
+          this.toast.success('Actualizando...', 'Registro exitoso!');
+          setTimeout(() => {
+            window.location.reload();
+           }, 1500);
+
+        }
+      });
+
+    }
+
+
+
+
+
+  }
+
+  selectknowledgeArea(data: KnowledgeArea){
+    // console.log('data :>> ', data);
+    this.formAddknowledgeArea = this._formBuilder.group({
+      name: [data.name, [Validators.required, Validators.minLength(4)]],
+      descriptor: [data.descriptor, [Validators.required, Validators.minLength(3)]],
+      factual: [data.factual, [Validators.required, Validators.min(0), Validators.max(5)]],
+      conceptual: [data.conceptual, [Validators.required, Validators.min(0), Validators.max(5)]],
+      procedural: [data.procedural, [Validators.required, Validators.min(0), Validators.max(5)]],
+      metacognitive: [data.metacognitive, [Validators.required, Validators.min(0), Validators.max(5)]],
+      appropriationLevel: [data.appropriationLevel, [Validators.required, Validators.min(0), Validators.max(5)]],
+
+    });
+    this.flagEdit = true;
+  }
+
+  deleteKnowledgeArea(data: KnowledgeArea){
+    let radarName = this.radar?.name;
+    this.radarService.deleteKnowledgeArea(radarName, data.descriptor).subscribe({
       next: (response) => {
         console.log('response :>> ', response);
       },
@@ -130,14 +204,13 @@ export class RadarDetailComponent {
 
       },
       complete: () => {
-        this.toast.success('Guardando...', 'Registro exitoso!');
+        this.toast.warning('Eliminando...', 'Borrado exitoso!');
         setTimeout(() => {
           window.location.reload();
          }, 1500);
 
       }
     });
-
   }
 
 

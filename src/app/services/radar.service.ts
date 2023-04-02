@@ -51,4 +51,15 @@ export class RadarService {
 
   }
 
+  updateKnowledgeArea(radarName:string | undefined, descriptor :string, knowledgeArea:KnowledgeArea):Observable<any>{
+    let direction = this.url + `/radar/${radarName}/update/knowledgeArea/${descriptor}`;
+    return this.http.put<Radar>(direction, knowledgeArea);
+
+  }
+
+  deleteKnowledgeArea(radarName: string | undefined, descriptor: string){
+    let direction = this.url +`/radar/${radarName}/knowledgeArea/${descriptor}`;
+    return this.http.put<any>(direction, null);
+  }
+
 }

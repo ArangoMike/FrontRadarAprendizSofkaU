@@ -12,6 +12,7 @@ import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/shared/models/user';
 import { dataTableLeague } from 'src/shared/models/dataTableLeague';
 import { MatPaginator } from '@angular/material/paginator';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 
@@ -22,6 +23,11 @@ import { MatPaginator } from '@angular/material/paginator';
 
 })
 export class LeagueDetailComponent implements AfterViewInit, OnInit {
+
+  formAddApprenticeLeague !: FormGroup;
+  userList : User[];
+  apprenticeList: User[];
+
 
   leagueName: any | null = null;
   league: League | null = null;
@@ -78,17 +84,82 @@ export class LeagueDetailComponent implements AfterViewInit, OnInit {
 
 
 
-  constructor(private toast: ToastrService,
+  constructor(
+    private toast: ToastrService,
+    private _formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private leagueService: LeagueService,
     private radarService: RadarService,
     private userService: UserService) {
+      this.initForm();
+      this.userList = [];
+      this.apprenticeList = [];
+      this.getAllUsers();
       this.getLeague();
       setTimeout(()=>{
         this.averageAll(this.league!.usersEmails!, this.league!.radarName!)
       },500)
 
       }
+
+      initForm(): void {
+        this.formAddApprenticeLeague = this._formBuilder.group({
+          email: ['', Validators.required]
+        })
+      }
+      get emailNoValido() {
+        return this.formAddApprenticeLeague.get('email')?.invalid && this.formAddApprenticeLeague.get('email')?.touched
+      }
+
+      onSubmitFormAddApprenticeLeague(){
+
+        if (this.formAddApprenticeLeague.invalid) {
+
+          this.toast.error('Intenta de nuevo', 'Error en los datos!');
+          return Object.values(this.formAddApprenticeLeague.controls).forEach(control => {
+            control.markAllAsTouched();
+          })
+        }
+        
+        console.log("FORMULARIO FUNCIONANDO");
+        const addApprenticeDTO: any = {
+          email: this.formAddApprenticeLeague.value.email,
+          leagueName: this.leagueName
+        }
+
+        this.leagueService.addAprenticeToLeague(addApprenticeDTO.email, addApprenticeDTO.leagueName ).subscribe({
+          next: (response) => {
+            console.log('response :>> ', response);
+          },
+          error: (error) => {
+            console.log('error :>> ', error);
+
+            return this.toast.error('Error inesperado', 'Vuelve a intentarlo, por favor.');
+
+          },
+          complete: () => {
+            this.toast.success('Guardando...', 'Registro exitoso!');
+            setTimeout(() => {
+              window.location.reload();
+             }, 1500);
+
+          }
+        });
+      }
+
+      getAllUsers() {
+
+        this.userService.listUsers().subscribe(data => {
+          this.userList = data;
+          this.userList
+          .filter(user => user.role === 'ROLE_APPRENTICE')
+          .forEach(user => {
+            this.apprenticeList.push(user);
+          } );
+        });
+        console.log('this.apprenticeList :>> ', this.apprenticeList);
+      }
+
 
   ngOnInit(): void {
     this.getLeague();

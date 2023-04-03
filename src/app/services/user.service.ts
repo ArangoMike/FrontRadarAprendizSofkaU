@@ -39,5 +39,5 @@ export class UserService {
     let direction = this.url + 'user/' + email;
     return this.http.get<User>(direction)
   }
- 
+
 }

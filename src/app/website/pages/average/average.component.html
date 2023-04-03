@@ -4,6 +4,70 @@
     <div class="pricing-header p-3 pb-md-4 mt-3 mx-auto text-center">
       <h1 class="display-4 fw-normal">Bienvenido a la sección de promedios de Ligas</h1>
       <p class="fs-5 text-body-secondary">Aquí podras ver todas las ligas disponibles para ver la relación con su respectivo radar</p>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Crear liga</button>
+      <!-- Scrollable modal -->
+      <!-- Modal -->
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Ingrese una nueva liga</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body flex flex-col">
+              <form
+              [formGroup]="formCreateLeague"
+              (ngSubmit)="onSubmitformCreateLeague()"
+              id="frmLeague">
+              <div class="flex flex-col">
+                <mat-form-field appearance="fill">
+                  <mat-label>Nombre de la liga</mat-label>
+                  <input type="text" formControlName="name" matInput>
+                </mat-form-field>
+                <small *ngIf="nameNoValido" class="text-danger">
+                  Ingrese minimo 4 letras
+                </small>
+
+                  <select style="height: 55.990px;" class="form-select mb-3" formControlName="radarName">
+                    <option *ngFor="let radarName of radarNameList" [value]="radarName">
+                      {{ radarName }}
+                    </option>
+                  </select>
+                  <small *ngIf="radarNameNoValido" class="text-danger">
+                    Por favor elija un radar
+                  </small>
+
+                <mat-form-field appearance="fill">
+                  <mat-label>Periodo</mat-label>
+                  <input type="text" formControlName="period" matInput>
+                </mat-form-field>
+                <small *ngIf="periodNoValido" class="text-danger">
+                  Ingrese un valor
+                </small>
+                <mat-form-field appearance="fill">
+                  <mat-label>Nombre del entrenador</mat-label>
+                  <input type="text" formControlName="coach" matInput>
+                </mat-form-field>
+                <small *ngIf="coachNoValido" class="text-danger">
+                  Ingrese un valor
+                </small>
+                <mat-form-field appearance="fill">
+                  <mat-label>Año</mat-label>
+                  <input type="text" formControlName="year" matInput>
+                </mat-form-field>
+                <small *ngIf="yearNoValido" class="text-danger">
+                  Por favor ingrese un año
+                </small>
+              </div>
+            </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button form="frmLeague" type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -15,7 +79,7 @@
             <h1 class="my-0 card-title pricing-card-title">{{ league.name }}</h1>
           </div>
           <div class="card-body">
-        
+
             <button
             type="button"
             class="w-100 btn btn-lg btn-outline-primary"

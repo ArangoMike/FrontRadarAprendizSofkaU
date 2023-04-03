@@ -66,6 +66,43 @@
             <!-- ... -->
             <div>
               <h2>Aprendices</h2>
+              <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Agregar</button>
+                   <!-- Scrollable modal -->
+      <!-- Modal -->
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Agregue un aprendiz</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body flex flex-col">
+              <form
+              [formGroup]="formAddApprenticeLeague"
+              (ngSubmit)="onSubmitFormAddApprenticeLeague()"
+
+              id="frmAddApprentice">
+              <div class="flex flex-col">
+                  <select style="height: 55.990px;" class="form-select mb-3" formControlName="email">
+                    <option *ngFor="let apprentice of apprenticeList" [value]="apprentice.email">
+                      {{ apprentice.email }}
+                    </option>
+                  </select>
+                  <small *ngIf="emailNoValido" class="text-danger">
+                    Por favor elija un correo
+                  </small>
+              </div>
+            </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button form="frmAddApprentice" type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
               <table mat-table [dataSource]="dataApprendices" class="mat-elevation-z8">
                 <!-- knowledgeArea Column -->
                 <ng-container matColumnDef="emailApprentice">
